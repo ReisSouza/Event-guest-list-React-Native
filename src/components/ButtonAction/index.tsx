@@ -13,10 +13,10 @@ const ButtonAction: React.FC<ButtonProps> = ({
   variant = 'add',
 }: ButtonProps) => {
   return (
-    <TouchableOpacity style={variant === 'add' ? S.buttonAdd : S.buttonRemove}>
-      <Text style={S.buttonText} onPress={onPress}>
-        {variant === 'add' ? '+' : '-'}
-      </Text>
+    <TouchableOpacity
+      style={variant === 'add' ? S.buttonAdd : S.buttonRemove}
+      onPress={onPress}>
+      <Text style={S.buttonText}>{variant === 'add' ? '+' : '-'}</Text>
     </TouchableOpacity>
   );
 };

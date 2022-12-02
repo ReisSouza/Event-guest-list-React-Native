@@ -1,73 +1,47 @@
-import dayjs from 'dayjs';
-import React from 'react';
-import {Alert, FlatList, ScrollView, Text, TextInput, View} from 'react-native';
-import {ButtonAction} from '../../components';
+import React, {useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {HeaderHome, SectionAddParticipant} from '../../features';
 import {Participant} from '../../modules';
+import handleParticipantRemove from '../../uitl/handleParticipantRemove';
 
 import S from './styles';
 
 type HomeProps = {};
 
 const Home: React.FC<HomeProps> = ({}: HomeProps) => {
-  const participants = [
-    'Reis',
-    'Souza',
-    'Elizabeth',
-    'Cristina',
-    'Kaylan',
-    'Luciano',
-    'Valdirene',
-    'luciana',
-    'Kaylan1',
-    'Luciano1',
-    'Valdirene1',
-    'luciana1',
-  ];
-  const handleParticipantAdd = () => {
-    if (participants.includes('Elizabeth')) {
-      return Alert.alert(
-        'Participante ja existe',
-        'Já existe um participante na lista com esse nome',
-      );
-    }
-  };
-  const handleParticipantRemove = (name: string) => {
-    Alert.alert('Remove', `Remover o participante ${name}`, [
-      {
-        text: 'Não',
-        style: 'cancel',
-      },
-      {
-        text: 'Sim',
-        onPress: () => Alert.alert('Deletado'),
-      },
-    ]);
-  };
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [participantName, setParticipantName] = useState<string | undefined>();
 
   return (
     <View style={S.container}>
-      <Text style={S.eventName}>Nome do evento</Text>
-      <Text style={S.eventDate}>
-        {dayjs().add(-3, 'h').format('ddd D MMM of YY')}
-      </Text>
-      <View style={S.form}>
-        <TextInput
-          style={S.input}
-          placeholder="Nome da participante"
-          placeholderTextColor="#6b6b6b"
-        />
-        <ButtonAction onPress={handleParticipantAdd} />
-      </View>
-      <ScrollView>
+      <HeaderHome />
+      <SectionAddParticipant
+        participantName={participantName}
+        participants={participants}
+        setParticipantName={setParticipantName}
+        setParticipants={setParticipants}
+      />
+      <ScrollView
+        showsHorizontalScrollIndicator
+        showsVerticalScrollIndicator={false}>
         <FlatList
           data={participants}
-          ListEmptyComponent={() => <Text>Vazio</Text>}
+          ListEmptyComponent={() => (
+            <Text style={S.notFoundTest}>
+              Não econtramos participante cadastrados, seja o primeiro
+            </Text>
+          )}
           keyExtractor={item => item}
           renderItem={({item}) => {
             return (
               <Participant
                 name={item}
-                onRemove={name => handleParticipantRemove(name)}
+                onRemove={name =>
+                  handleParticipantRemove({
+                    name,
+                    setParticipants,
+                  })
+                }
               />
             );
           }}
